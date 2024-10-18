@@ -83,14 +83,10 @@ class HomePage(Column):
         upper = m.ceil(self.testsTaken/10)
         return [ChartAxisLabel(value=10*i,label=Text(str(10*i))) for i in range(1,upper+1)]
 
-        
-
-                                                                                
-                                                                                
-
-
-
-
+class PerformancePage(Column):
+    def __init__(self, page: Page):
+        super().__init__()
+        self.history = page.client_storage.get()
 
 class MaterialsPage(Column):
     def __init__(self,page:Page):
