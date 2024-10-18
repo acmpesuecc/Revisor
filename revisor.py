@@ -86,7 +86,7 @@ class HomePage(Column):
 class PerformancePage(Column):
     def __init__(self, page: Page):
         super().__init__()
-        self.history = page.client_storage.get()
+        self.history = page.client_storage.get("history")
 
 class MaterialsPage(Column):
     def __init__(self,page:Page):
