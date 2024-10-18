@@ -86,7 +86,13 @@ class HomePage(Column):
 class PerformancePage(Column):
     def __init__(self, page: Page):
         super().__init__()
-        self.history = page.client_storage.get("history")
+        self.page = page
+        self.history = self.page.client_storage.get("history")
+        self.graph_data = []
+        c = 1
+        for score in self.history:
+            self.graph_data.append(Page.LineChartDataPoint(c,score))
+            c += 1
 
 class MaterialsPage(Column):
     def __init__(self,page:Page):
