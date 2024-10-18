@@ -147,7 +147,22 @@ class MaterialsPage(Column):
         self.fullBank = self.page.client_storage.get("bank")
         self.all_tags = self.page.client_storage.get("all_tags")
 
-        self.MCQ_objects = [json.loads(i) for i in self.uploadForm.content.controls[0].value.splitlines()]
+        #This block below is what I added
+        input=self.uploadForm.content.controls[0].value.splitlines()[0]
+        list_input=['']
+        j=0
+        for i in input:
+            if i=='\n':
+                continue
+            try:
+                list_input[j]+=i
+            except IndexError:
+                list_input.append(i)
+            if i == '}':
+                j+=1
+        print("Input: ", input)
+
+        self.MCQ_objects = [json.loads(i) for i in list_input]      #I changed self.uploadForm.content.controls[0].value.splitlines() to list_input
         for mcq_obj in self.MCQ_objects:
             for i in mcq_obj["t"]:
                 if i not in self.all_tags:
@@ -161,6 +176,11 @@ class MaterialsPage(Column):
         self.bankSize.controls[0].content.value = f'{self.length}'
         self.page.client_storage.set("stat.totalQs", self.length)
         self.page.update()
+
+        #Something is wrong with the JSON reader and it doesn't take input when you put newline chars between each key:value pair thing
+        #So you have to input as the following:
+        #{"q":"This is a sample question", "t":["easy","u1","Math"], "o":["option A","option B","option C","option D"], "a":2}{"q":"This is a sample question", "t":["easy","u1","Math"], "o":["option A","option B","option C","option D"], "a":2}...
+
 
 
 
@@ -461,4 +481,5 @@ def main(page: Page):
     )
 
 app(target=main)
+
 
