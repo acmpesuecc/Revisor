@@ -439,6 +439,7 @@ def main(page: Page):
     home = HomePage(page)
     mats = MaterialsPage(page)
     test = TestPage(page)
+    performance = PerformancePage(page)
     page.add(
         Row(
             [
@@ -447,7 +448,8 @@ def main(page: Page):
                 Column([
                     home,
                     mats,
-                    test
+                    test,
+                    performance
                 ], 
                 alignment=MainAxisAlignment.SPACE_BETWEEN, 
                 expand=True,),
