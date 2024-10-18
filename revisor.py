@@ -83,14 +83,6 @@ class HomePage(Column):
         upper = m.ceil(self.testsTaken/10)
         return [ChartAxisLabel(value=10*i,label=Text(str(10*i))) for i in range(1,upper+1)]
 
-        
-
-                                                                                
-                                                                                
-
-
-
-
 
 class MaterialsPage(Column):
     def __init__(self,page:Page):
@@ -203,6 +195,50 @@ class MCQ(Container):
             ]
         )
 
+class SettingsPage(Column):
+    def __init__(self, page: Page):
+        super().__init__()
+        self.page = page
+        self.visible = False
+
+        self.resolutions = ["1280x720", "1920x1080", "2560x1440"]
+        self.selected_resolution = self.page.client_storage.get("settings.resolution") or "1920x1080"
+        self.themes = ["Light", "Dark", "System Default"]
+        self.selected_theme = self.page.client_storage.get("settings.theme") or "System Default"
+
+        self.resolution_selector = Dropdown(
+            label="Resolution",
+            options=[dropdown.Option(res) for res in self.resolutions],  # Fixed this line
+            value=self.selected_resolution,
+            on_change=self.update_settings
+        )
+
+        self.theme_selector = Dropdown(
+            label="Theme",
+            options=[dropdown.Option(theme) for theme in self.themes],  # Fixed this line
+            value=self.selected_theme,
+            on_change=self.update_settings
+        )
+
+        self.save_button = ElevatedButton(text="Save Settings", on_click=self.save_settings)
+
+        self.controls = [
+            Text("Settings", size=40, weight="bold"),
+            self.resolution_selector,
+            self.theme_selector,
+            self.save_button
+        ]
+        self.expand = True
+
+    def update_settings(self, e):
+        self.selected_resolution = self.resolution_selector.value
+        self.selected_theme = self.theme_selector.value
+
+    def save_settings(self, e):
+        self.page.client_storage.set("settings.resolution", self.selected_resolution)
+        self.page.client_storage.set("settings.theme", self.selected_theme)
+        self.page.snack_bar = SnackBar(Text("Settings saved successfully!"), open=True)
+        self.page.update()
 
 
 class TestPage(Column):
@@ -368,29 +404,6 @@ class TestPage(Column):
         self.page.update()
         print(self.selected_tags)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def main(page: Page):
     page.title = "Revisor"
     page.theme = Theme(color_scheme_seed="#66f9f9",font_family="Bahnschrift")
@@ -443,6 +456,7 @@ def main(page: Page):
     home = HomePage(page)
     mats = MaterialsPage(page)
     test = TestPage(page)
+    set = SettingsPage(page)
     page.add(
         Row(
             [
